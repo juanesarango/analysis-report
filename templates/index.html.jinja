@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" rel="stylesheet"
+    type="text/css" />
+
+  {# Semantic UI #}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+  {% block head %}
+  <title>{{ title }}</title>
+  {% endblock %}
+</head>
+
+<body>
+  {% from 'templates/macro.datatable.html.jinja' import datatable %}
+  {% from 'templates/macro.embedded.html.jinja' import embedded %}
+  <noscript>
+    <strong>We're sorry but the report doesn't work properly without JavaScript enabled.
+      Please enable it to continue.</strong>
+  </noscript>
+
+  <div class="ui segment main-report">
+
+    <div class="ui left rail report-sidebar">
+      <div class="ui sticky">
+
+        <div class="ui vertical following fluid accordion text menu">
+          <div class="item"><a class="title"><i class="dropdown icon"></i> <b>Patient {{ individual.system_id }}</b></a>
+            <div class="content menu active">
+              <a class="item" href="#patient-details">Patient Details</a>
+              {% for result in results %}
+                <a class="item" href="#{{ result.id }}">{{ result.title }}</a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="content" class="segment">
+
+      {# Title #}
+      <div id="patient-details">
+        <h1 class="ui header report-title">Isabl Pediatric Report</h1>
+        <button class="circular ui basic icon button isabl-btn">
+          <a href="https://isabl.mskcc.org/?bioModel={{ individual.system_id }}" target="_blank">
+            <img src="https://user-images.githubusercontent.com/7906289/45718714-09330200-bb6c-11e8-8a60-5da580086a5f.png">
+          </a>
+        </button>
+      </div>
+
+      {# Patient Details #}
+      <div class="ui horizontal list patient-details">
+        <div class="item">
+          {% if individual.gender == 'FEMALE' %}
+            <img class="ui tiny circular image" src="https://image.flaticon.com/icons/svg/163/163811.svg">
+          {% elif individual.gender == 'MALE' %}
+            <img class="ui tiny circular image" src="https://image.flaticon.com/icons/svg/163/163804.svg">
+          {% else %}
+            <img class="ui tiny circular image" src="https://image.flaticon.com/icons/svg/135/135077.svg">
+          {% endif %}
+
+          <div class="content">
+            <table class="ui very basic collapsing celled table">
+              <tbody>
+                <tr>
+                  <td><h4 class="ui header"><div class="content">DMP ID:</div></h4></td>
+                  <td>{{ individual.custom_fields.dmp_id }}</td>
+                </tr>
+                <tr>
+                  <td><h4 class="ui header"><div class="content">GENDER:</div></h4></td>
+                  <td>{{ individual.gender }}</td>
+                </tr>
+                <tr>
+                  <td><h4 class="ui header"><div class="content">PART-C:</div></h4></td>
+                  <td>
+                    {% if individual.custom_fields.germline_consent == "True" %}
+                      <i class="green check icon"></i>
+                    {% else %}
+                      <i class="grey close icon"></i>
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <td><h4 class="ui header"><div class="content">DISEASE(S):</div></h4></td>
+                  <td>
+                    {% for disease in samples | map(attribute='disease.slug') | unique %}
+                      <div class="ui mini">{{ disease }}</div>
+                    {% endfor %}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {# Analyses Results #}
+      {% for result in results %}
+        <div class="result">
+          <h3 id="{{ result.id }}" class="ui blue ribbon label">{{ result.title }}</h3>
+
+          {# If result has data table #}
+          {% if result.data %}
+            {% if result.data and result.data.datatable %}
+              {{ datatable(result.data.datatable) }}
+            {% endif %}
+
+            {% if result.data and result.data.embedded %}
+              {{ embedded(result.data.embedded) }}
+            {% endif %}
+          {% endif %}
+
+
+          {# if result has modal #}
+          {% if result.modal %}
+            <button
+              class="ui button"
+              onclick="openModal('#{{ result.id }}-modal')"
+            >{{ result.modal.button_text }}</button>
+
+            <div id="{{ result.id }}-modal" class="ui fullscreen modal">
+              <i class="close icon"></i>
+              <div class="header">
+                {{ result.modal.title }}
+              </div>
+              <div class="scrolling content">
+                {% if result.modal and result.modal.datatable %}
+                  {{ datatable(result.modal.datatable) }}
+                {% endif %}
+                {% if result.modal and result.modal.embedded %}
+                  {{ embedded(result.modal.embedded) }}
+                {% endif %}
+              </div>
+              <div class="actions">
+                <div class="ui black deny button">
+                  Close
+                </div>
+              </div>
+            </div>
+          {% endif %}
+
+        </div>
+      {% endfor %}
+    </div>
+
+
+    <div id="my_awesome_line_graph" class="hc-plot"></div>
+    <script type="text/javascript">
+      mqc_plots['#my_awesome_bar_plot']['plot_type'] = 'xy_line';
+      mqc_plots['#my_awesome_line_graph']['datasets'] = [
+          {
+              name: 'Sample 1',
+              data: [[1, 1.5], [1.5, 3.1], [2, 6.4]]
+          },
+          {
+              name: 'Sample 2',
+              data: [[1, 1.7], [1.5, 4.3], [2, 8.4]]
+          },
+      ];
+      mqc_plots['#my_awesome_line_graph']['config'] = {
+          "title": "Best Plot Ever",
+          "ylab": "Pings",
+          "xlab": "Pongs"
+      };
+      $(function () {
+          plot_xy_line_graph('#my_awesome_line_graph');
+      });
+    </script>
+
+
+    {# Footer #}
+    <div id="footer">
+      {% block footer %}
+      &copy; Made with ❤️ by <a href="https://ski.edu/papaemmanuil">Papaemmanuil Lab</a> - Isabl 2019.
+      {% endblock %}
+    </div>
+  </div>
+
+</body>
+<style>
+  body {
+    min-width: 1300px;
+  }
+  h1.ui.header {
+    font-size: 4rem;
+  }
+  #content {
+    min-height: 1300px;
+  }
+  #patient-details {
+    padding-top: 8px;
+  }
+  .report-title {
+    display: inline-block;
+  }
+  .result {
+    min-height: 200px;
+    padding-bottom: 50px;
+  }
+  .result h3 {
+    padding-top: 8px;
+  }
+  .result div.bk {
+    margin: auto !important;
+  }
+  .ui.list.patient-details {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  .ui.list.patient-details img {
+    height: 70px;
+  }
+  .ui.list.patient-details .header {
+    display: inline;
+  }
+  .ui.segment.main-report {
+    margin-left: 280px;
+    margin-right: 20px;
+    margin-top: 0px;
+    border-radius: 0;
+    border-top: none;
+    border-bottom: none;
+  }
+  .ui.rail.report-sidebar {
+    margin-right: 0;
+    margin-top: 1rem;
+    padding-right: 1rem;
+    width: 250px;
+  }
+  .ui.button.isabl-btn {
+    height: 40px;
+    width: 40px;
+    margin-left: 10px;
+    vertical-align: text-bottom;
+  }
+  .isabl-btn img {
+    height: 18px;
+    width: 18px;
+  }
+</style>
+<script>
+  $('.ui.accordion').accordion();
+  $('.ui.sticky').sticky({context: '#content'});
+
+  function openModal(selector) {
+    $(selector).modal('show');
+  }
+</script>
+</html>

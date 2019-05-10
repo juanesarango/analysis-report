@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="https://img.icons8.com/android/24/000000/biotech.png">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v0.4.1/dist/bootstrap-toc.min.css">
+  <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v0.4.1/dist/bootstrap-toc.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <script src="https://unpkg.com/floatthead"></script>
+  <script>
+    $(document).ready(function () {
+      var navSelector = '#toc';
+      var $myNav = $(navSelector);
+      Toc.init($myNav);
+      $('body').scrollspy({
+        target: navSelector
+      });
+      $("table").floatThead({
+        position: 'absolute',
+        responsiveContainer: function ($table) { return $table.closest('.table-responsive'); }
+      });
+    });
+  </script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      padding-left: 15%;
+      margin-right: 10%;
+      height: 100%;
+    }
+
+    img {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 65%;
+    }
+
+    .modal-body>img {
+      width: 90%;
+    }
+
+    .big-img {
+      width: 100%;
+    }
+
+    .bk-plot-layout {
+      margin: 0 auto;
+    }
+
+    pre {
+      background-color: inherit;
+      border-color: transparent;
+    }
+
+    table.floatThead-table {
+      border-top: none;
+      border-bottom: none;
+      background-color: #FFF;
+    }
+  </style>
+</head>
+
+<body>
+  <nav id="toc" data-spy="affix" style="position:fixed; margin-left:-15%;" data-toggle="toc" class="affix">
+    <ul class="nav">
+      <li><a href="#patient-i-h-108333">Patient I-H-108333</a>
+        <ul class="nav">
+          <li><a href="#cbio-portal-results-">CBio Portal Results:</a></li>
+          <li><a href="#rna-sample-i-h-108333-t2-1-r1-1">RNA Sample: I-H-108333-T2-1-R1-1</a></li>
+          <li><a href="#fusion-results-">Fusion Results:</a></li>
+          <li><a href="#expression-tsne-results-">Expression TSNE Results:</a></li>
+          <li><a href="#overexpressed-cancer-genes-">Overexpressed Cancer Genes:</a></li>
+          <li><a href="#wgs-sample-i-h-108333-t2-2-d1-1">WGS Sample: I-H-108333-T2-2-D1-1</a></li>
+          <li><a href="#copy-number-results-">Copy Number Results:</a></li>
+          <li><a href="#snv-results-">SNV Results:</a></li>
+          <li><a href="#indel-results-">Indel Results:</a></li>
+          <li><a href="#rearrangement-results-">Rearrangement Results:</a></li>
+          <li><a href="#calls-by-numbers-">Calls by Numbers:</a></li>
+          <li><a href="#integrated-circos-">Integrated Circos:</a></li>
+          <li><a href="#mutational-signatures">Mutational Signatures</a></li>
+        </ul>
+      </li>
+      <li><a href="#end-report">END REPORT</a></li>
+    </ul>
+  </nav>
+  <title>I-H-108333</title>
+</body>
+</html>

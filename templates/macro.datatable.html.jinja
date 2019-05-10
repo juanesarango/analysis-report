@@ -1,0 +1,23 @@
+{% macro datatable(data) %}
+    {% if data.title %}
+      <h3 class="ui header">{{ data.title }}</h3>
+    {% endif %}
+    <table class="ui blue table">
+      <thead>
+        <tr>
+          {% for header in data.headers %}
+            <th>{{ header.name.replace("_", " ")}}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in data.rows %}
+          <tr>
+            {% for header in data.headers %}
+              <td>{{ row[header.name] }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+{% endmacro %}

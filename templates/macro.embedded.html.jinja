@@ -1,0 +1,13 @@
+{% macro embedded(data) %}
+    {% if data.title %}
+      <h3 class="ui header">{{ data.title }}</h3>
+    {% endif %}
+    <div class="content">
+      {% if data.html %}
+        {{ data.html | safe }}
+      {% endif %}
+      {% if data.img %}
+        <img class="ui fluid image" src="{{ data.img }}">
+      {% endif %}
+    </div>
+{% endmacro %}
